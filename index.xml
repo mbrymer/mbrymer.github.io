@@ -9,11 +9,20 @@
     <copyright>Copyright © 2008–2019, Steve Francia and the Hugo Authors; all rights reserved.</copyright>
     <lastBuildDate>Mon, 29 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://mbrymer.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Visual-Inertial Relative Pose Estimation for Quadrotor Landing</title>
-      <link>https://mbrymer.github.io/post/image-test/</link>
+      <title>Projects</title>
+      <link>https://mbrymer.github.io/projects/</link>
       <pubDate>Mon, 29 Aug 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://mbrymer.github.io/post/image-test/</guid>
+      <guid>https://mbrymer.github.io/projects/</guid>
+      <description>These are some things I&amp;rsquo;ve worked on</description>
+    </item>
+    
+    <item>
+      <title>Visual-Inertial Relative Pose Estimation for Quadrotor Landing</title>
+      <link>https://mbrymer.github.io/post/quadrotor_relative_pose_estimation/</link>
+      <pubDate>Mon, 29 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://mbrymer.github.io/post/quadrotor_relative_pose_estimation/</guid>
       <description>&lt;p&gt;Summer project where I began developing a quadrotor capable of autonomously flying to a target location and landing based on visual-inertial navigation&lt;/p&gt;</description>
     </item>
     
@@ -27,14 +36,36 @@
     </item>
     
     <item>
-      <title>Hierarchical Trajectory Planning for Quadrotor Flight in Unknown Environments</title>
-      <link>https://mbrymer.github.io/post/video-test/</link>
-      <pubDate>Sat, 16 May 2020 00:00:00 +0000</pubDate>
+      <title>Visual-Inertial Relative Pose Estimation for Quadrotor Landing</title>
+      <link>https://mbrymer.github.io/postd/relative_pose_estimation/</link>
+      <pubDate>Mon, 29 Aug 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://mbrymer.github.io/post/video-test/</guid>
-      <description>We implemented FASTER.
-Did some studies on opt problem formulation
-These were the test cases These were the results Very basic page just to test how an embedded video might appear.</description>
+      <guid>https://mbrymer.github.io/postd/relative_pose_estimation/</guid>
+      <description>&lt;p&gt;Summer project where I began developing a quadrotor capable of autonomously flying to a target location and landing based on visual-inertial navigation&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Hierarchical Trajectory Planning for Quadrotor Flight in Unknown Environments</title>
+      <link>https://mbrymer.github.io/post/quadrotor_trajectory_planning/</link>
+      <pubDate>Thu, 28 Apr 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://mbrymer.github.io/post/quadrotor_trajectory_planning/</guid>
+      <description>&lt;p&gt;We implemented FASTER. Sort of&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Batch Visual-Inertial Pose Estimation for a Stereo Camera</title>
+      <link>https://mbrymer.github.io/post/camera_pose_estimation/</link>
+      <pubDate>Fri, 10 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://mbrymer.github.io/post/camera_pose_estimation/</guid>
+      <description>&lt;!-- KaTeX --&gt;
+&lt;link rel=&#34;stylesheet&#34; href=&#34;https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css&#34; integrity=&#34;sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq&#34; crossorigin=&#34;anonymous&#34;&gt;
+&lt;script defer src=&#34;https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js&#34; integrity=&#34;sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz&#34; crossorigin=&#34;anonymous&#34;&gt;&lt;/script&gt;
+&lt;script defer src=&#34;https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js&#34; integrity=&#34;sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI&#34; crossorigin=&#34;anonymous&#34; onload=&#34;renderMathInElement(document.body);&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;The final assignment in one of my classes at UTIAS, AER 1513 - State Estimation for Robotics, had us solve a batch state estimation problem for a sensor head with both a stereo camera and an IMU attached.&lt;/p&gt;</description>
     </item>
     
     <item>

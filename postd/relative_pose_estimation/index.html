@@ -6,7 +6,7 @@
 
     
     
-    <title>Hierarchical Trajectory Planning for Quadrotor Flight in Unknown Environments · Matt Brymer</title>
+    <title>Visual-Inertial Relative Pose Estimation for Quadrotor Landing · Matt Brymer</title>
 
     <meta name="HandheldFriendly" content="True" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -33,13 +33,15 @@
                 
                 <li class="nav-home" role="menuitem"><a href="/image-credit/">Projects</a></li>
                 
-                <li class="nav-home" role="menuitem"><a href="/authors">Authors</a></li>
+                <li class="nav-home" role="menuitem"><a href="/projects/">Projects Real</a></li>
                 
-                <li class="nav-home" role="menuitem"><a href="https://github.com/jonathanjanssens/hugo-casper3">LinkedIn</a></li>
+                <li class="nav-home" role="menuitem"><a href="/authors">Authors</a></li>
                 
                 <li class="nav-home" role="menuitem"><a href="/matt_brymer_resume.pdf">Resume</a></li>
                 
-                <li class="nav-home" role="menuitem"><a href="https://jonathanjanssens.com">GitHub</a></li>
+                <li class="nav-home" role="menuitem"><a href="https://www.linkedin.com/in/mattbrymer/">LinkedIn</a></li>
+                
+                <li class="nav-home" role="menuitem"><a href="https://github.com/mbrymer">GitHub</a></li>
                 
             </ul>
         </div>
@@ -59,19 +61,33 @@
 
                 
 
-                <h1 class="post-full-title">Hierarchical Trajectory Planning for Quadrotor Flight in Unknown Environments</h1>
+                <h1 class="post-full-title">Visual-Inertial Relative Pose Estimation for Quadrotor Landing</h1>
 
                 
 
                 <div class="post-full-byline">
                     <section class="post-full-byline-content">
 
-                        
+                        <ul class="author-list">
+    <li class="author-list-item">
+        <div class="author-card">
+            <div class="author-profile-image"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M3.513 18.998C4.749 15.504 8.082 13 12 13s7.251 2.504 8.487 5.998C18.47 21.442 15.417 23 12 23s-6.47-1.558-8.487-4.002zM12 12c2.21 0 4-2.79 4-5s-1.79-4-4-4-4 1.79-4 4 1.79 5 4 5z" fill="#FFF"/></g></svg></div>
+            <div class="author-info">
+                <div class="author-info">
+                    <h2>Matt Brymer</h2>
+                </div>
+            </div>
+        </div>
+        <a href="#" class="author-avatar author-profile-image"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M3.513 18.998C4.749 15.504 8.082 13 12 13s7.251 2.504 8.487 5.998C18.47 21.442 15.417 23 12 23s-6.47-1.558-8.487-4.002zM12 12c2.21 0 4-2.79 4-5s-1.79-4-4-4-4 1.79-4 4 1.79 5 4 5z" fill="#FFF"/></g></svg></a>
+    </li>
+</ul>
 
                         <section class="post-full-byline-meta">
                             
+                                <h4 class="author-name">Matt Brymer</h4>
+                            
                             <div class="byline-meta-content">
-                                <time class="byline-meta-date" datetime="2020-125-05">16 May 2020</time>
+                                <time class="byline-meta-date" datetime="2022-128-08">29 August 2022</time>
                                 
                             </div>
                         </section>
@@ -84,25 +100,25 @@
 
             
             <figure class="post-full-image">
-                <img src="/images/small_forest_composite.png" alt="Hierarchical Trajectory Planning for Quadrotor Flight in Unknown Environments" />
+                <img src="/images/outdoor_sweeping_collage.png" alt="Visual-Inertial Relative Pose Estimation for Quadrotor Landing" />
             </figure>
             
 
             <section class="post-full-content">
                 <div class="post-content">
-                    <p>We implemented FASTER.</p>
-<p>Did some studies on opt problem formulation</p>
-<p>These were the test cases
-<img src="/images/prob_form_test_cases.png" alt="test_cases"></p>
-<p>These were the results
-<img src="/images/state_traj_MIQP.png" alt="sample_results"></p>
-<p>Very basic page just to test how an embedded video might appear.</p>
+                    <p>Summer project where I began developing a quadrotor capable of autonomously flying to a target location and landing based on visual-inertial navigation</p>
+<p>•	Developed a Multiplicative Extended Kalman Filter for fusing IMU data with AprilTag pose measurements to estimate relative pose over the landing pad
+•	Implemented filter in a C++ ROS node and deployed on a custom quadrotor platform powered by an NVIDIA Jetson Nano and industrial vision camera
+•	Evaluated in RotorS simulations and achieved estimation error below 50 mm at a height of 2 m
+•	Validated in manual flight tests including sweeping flights and simulated landings after 3 months of development</p>
+<p>I did some camera calibration
+<img src="/images/camera_calibration.png" alt="Camera Calibration"></p>
+<p>Here&rsquo;s the cool YouTube video I made:
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
   <iframe src="https://www.youtube-nocookie.com/embed/w7Ft2ymGmfc" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
 </div>
-
-
+</p>
                 </div>
             </section>
 
@@ -118,26 +134,25 @@
  ">
 
         
-            <a class="post-card-image-link" href="https://mbrymer.github.io/post/markdown-syntax/">
-                <img class="post-card-image"src="/images/francesco-ungaro-GX81x7KTfIw-unsplash.jpg" alt="Markdown Syntax Guide"/>
+            <a class="post-card-image-link" href="https://mbrymer.github.io/postd/video-test/">
+                <img class="post-card-image"src="/images/small_forest_composite.png" alt="Hierarchical Trajectory Planning for Quadrotor Flight in Unknown Environments"/>
             </a>
         
     
         <div class="post-card-content">
     
-            <a class="post-card-content-link" href="https://mbrymer.github.io/post/markdown-syntax/">
+            <a class="post-card-content-link" href="https://mbrymer.github.io/postd/video-test/">
     
                 <header class="post-card-header">
                     
-                        
-                        <div class="post-card-primary-tag">markdown</div>
-                    
 
-                    <h2 class="post-card-title">Markdown Syntax Guide</h2>
+                    <h2 class="post-card-title">Hierarchical Trajectory Planning for Quadrotor Flight in Unknown Environments</h2>
                 </header>
     
                 <section class="post-card-excerpt">
-                    <p><p>This article offers a sample of basic Markdown syntax that can be used in Hugo content files, also it shows whether basic HTML elements are decorated with CSS in a Hugo theme.</p></p>
+                    <p>We implemented FASTER.
+Did some studies on opt problem formulation
+These were the test cases These were the results Very basic page just to test how an embedded video might appear.</p>
                 </section>
     
             </a>
@@ -155,14 +170,14 @@
  ">
 
         
-            <a class="post-card-image-link" href="https://mbrymer.github.io/post/image-test/">
+            <a class="post-card-image-link" href="https://mbrymer.github.io/postd/image-test/">
                 <img class="post-card-image"src="/images/outdoor_sweeping_collage.png" alt="Visual-Inertial Relative Pose Estimation for Quadrotor Landing"/>
             </a>
         
     
         <div class="post-card-content">
     
-            <a class="post-card-content-link" href="https://mbrymer.github.io/post/image-test/">
+            <a class="post-card-content-link" href="https://mbrymer.github.io/postd/image-test/">
     
                 <header class="post-card-header">
                     
@@ -189,7 +204,7 @@
 
         <footer class="site-footer outer">
             <div class="site-footer-content inner">
-                <section class="copyright"><a href="https://mbrymer.github.io/">Matt Brymer</a> &copy; 2020</section>
+                <section class="copyright"><a href="https://mbrymer.github.io/">Matt Brymer</a> &copy; 2022</section>
                 <nav class="site-footer-nav">
                     <a href="https://mbrymer.github.io/">Latest Posts</a>
                     

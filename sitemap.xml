@@ -11,14 +11,23 @@
     <loc>https://mbrymer.github.io/postd/</loc>
     <lastmod>2022-08-29T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://mbrymer.github.io/post/image-test/</loc>
+    <loc>https://mbrymer.github.io/projects/</loc>
+    <lastmod>2022-08-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://mbrymer.github.io/post/quadrotor_relative_pose_estimation/</loc>
     <lastmod>2022-08-29T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://mbrymer.github.io/postd/image-test/</loc>
     <lastmod>2022-08-29T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://mbrymer.github.io/post/video-test/</loc>
-    <lastmod>2020-05-16T00:00:00+00:00</lastmod>
+    <loc>https://mbrymer.github.io/postd/relative_pose_estimation/</loc>
+    <lastmod>2022-08-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://mbrymer.github.io/post/quadrotor_trajectory_planning/</loc>
+    <lastmod>2022-04-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://mbrymer.github.io/post/camera_pose_estimation/</loc>
+    <lastmod>2021-12-10T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://mbrymer.github.io/postd/video-test/</loc>
     <lastmod>2020-05-16T00:00:00+00:00</lastmod>

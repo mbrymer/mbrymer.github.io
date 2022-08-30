@@ -18,6 +18,15 @@
     </item>
     
     <item>
+      <title>Visual-Inertial Relative Pose Estimation for Quadrotor Landing</title>
+      <link>https://mbrymer.github.io/postd/relative_pose_estimation/</link>
+      <pubDate>Mon, 29 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://mbrymer.github.io/postd/relative_pose_estimation/</guid>
+      <description>&lt;p&gt;Summer project where I began developing a quadrotor capable of autonomously flying to a target location and landing based on visual-inertial navigation&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>Hierarchical Trajectory Planning for Quadrotor Flight in Unknown Environments</title>
       <link>https://mbrymer.github.io/postd/video-test/</link>
       <pubDate>Sat, 16 May 2020 00:00:00 +0000</pubDate>
