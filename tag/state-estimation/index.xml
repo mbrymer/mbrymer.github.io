@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>State Estimation | Matt Brymer</title><link>https://mbrymer.github.io/tag/state-estimation/</link><atom:link href="https://mbrymer.github.io/tag/state-estimation/index.xml" rel="self" type="application/rss+xml"/><description>State Estimation</description><generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Fri, 10 Dec 2021 00:00:00 +0000</lastBuildDate><image><url>https://mbrymer.github.io/media/icon_hu1de1b76137c20b64cb0e309cf8549bbd_20734_512x512_fill_lanczos_center_3.png</url><title>State Estimation</title><link>https://mbrymer.github.io/tag/state-estimation/</link></image><item><title>Batch Pose Estimation for a Stereo Camera</title><link>https://mbrymer.github.io/project/camera_pose_estimation/</link><pubDate>Fri, 10 Dec 2021 00:00:00 +0000</pubDate><guid>https://mbrymer.github.io/project/camera_pose_estimation/</guid><description>&lt;p>The final assignment in one of my classes at UTIAS, AER 1513 - State Estimation for Robotics, had us solve a batch state estimation problem for a sensor head with both a stereo camera and an IMU attached.&lt;/p>
+&lt;h2 id="overview">&lt;strong>Overview&lt;/strong>&lt;/h2>
+&lt;p>The task was to derive an estimate for the full 6 DoF pose trajectory of the sensor head (henceforth referred to as the &amp;ldquo;vehicle&amp;rdquo;) for a sweeping motion spanning approximately 40 s given a history of IMU and stereo camera measurements. The vehicle was moved back and forth over a canvas with a set of markers on it that were each known to have a given, fixed location. These markers formed landmarks that through the stereo camera images and model could be used to establish an absolute position reference. Measurements to multiple landmarks can then be used to triangulate a position and orientation.&lt;/p>
+&lt;p>The experimental setup along with sample camera images and the ground truth pose is shown below.&lt;/p>
+&lt;p>
+&lt;figure >
+&lt;div class="d-flex justify-content-center">
+&lt;div class="w-100" >&lt;img alt="problem_overview" srcset="
+/project/camera_pose_estimation/images/problem_overview_huede8265e7e9cf94f196130bbb2e61763_355699_318e8f9b9363c72baf3f1eea964c0017.webp 400w,
+/project/camera_pose_estimation/images/problem_overview_huede8265e7e9cf94f196130bbb2e61763_355699_be866f8876998c669505d1d4e2528dc7.webp 760w,
+/project/camera_pose_estimation/images/problem_overview_huede8265e7e9cf94f196130bbb2e61763_355699_1200x1200_fit_q100_h2_lanczos_3.webp 1200w"
+src="https://mbrymer.github.io/project/camera_pose_estimation/images/problem_overview_huede8265e7e9cf94f196130bbb2e61763_355699_318e8f9b9363c72baf3f1eea964c0017.webp"
+width="750"
+height="563"
+loading="lazy" data-zoomable />&lt;/div>
+&lt;/div>&lt;/figure>
+&lt;/p>
+&lt;p>Some simplifications were made to reduced the scope of the problem. The linear acceleration signals were transformed to linear velocities and the stereo camera images were preprocessed to identify the locations of the landmarks within both images, removing the problem of data association. Thus the inputs for the estimation problem consisted of a time history of linear velocity, angular velocity and pixel coordinates for the landmarks in both camera images. Also available were ground truth pose measurements from an external motion capture system for evaluating estimation error, parameters of the stereo camera and the pose of the camera relative to the IMU.&lt;/p>
+&lt;p>The camera was kept relatively close to the canvas and moved through a range of angles, leading to only some of the landmarks being visible at any given time. For about a third of the event there were fewer than 3 landmarks in view, or sometimes none at all. Given that at least 3 landmarks are needed to fix a position fusing both the camera and IMU data is necessary to obtain a pose estimate for the full trajectory.&lt;/p>
+&lt;p>
+&lt;figure >
+&lt;div class="d-flex justify-content-center">
+&lt;div class="w-100" >&lt;img alt="landmarks_visible" srcset="
+/project/camera_pose_estimation/images/landmarks_vs_time_huba00a997a251167c910168911254becd_37720_d1cf525145a1251ac57d67adfef3779d.webp 400w,
+/project/camera_pose_estimation/images/landmarks_vs_time_huba00a997a251167c910168911254becd_37720_aa02904f041775fbe33308c215e24074.webp 760w,
+/project/camera_pose_estimation/images/landmarks_vs_time_huba00a997a251167c910168911254becd_37720_1200x1200_fit_q100_h2_lanczos_3.webp 1200w"
+src="https://mbrymer.github.io/project/camera_pose_estimation/images/landmarks_vs_time_huba00a997a251167c910168911254becd_37720_d1cf525145a1251ac57d67adfef3779d.webp"
+width="760"
+height="482"
+loading="lazy" data-zoomable />&lt;/div>
+&lt;/div>&lt;/figure>
+&lt;/p>
+&lt;h2 id="implementation-and-results">&lt;strong>Implementation and Results&lt;/strong>&lt;/h2>
+&lt;p>The batch estimation problem was solved by forming a nonlinear least squares cost function in terms of the pose matrix at each timestep, the IMU inputs and stereo camera measurements. The problem was solved using an iterative Gauss-Newton optimization in implemented in a MATLAB script that converged in approximately 10 iterations. The next section digs into some of the details, but for those with less time on their hands we go straight to the results first 🙂&lt;/p>
+&lt;p>A 3D trace of the final vehicle position estimate is shown below, along with the result from dead reckoning by solely integrating the IMU signal and the ground truth. It can be seen that the estimate overall does a good job of following the ground truth, although there does appear to be a consistent bias in the Y position. The dead reckoned estimate diverges from the ground truth relatively quickly, demonstrating the importance of supplementing IMU measurements with absolute references&lt;/p>
+&lt;p>
+&lt;figure >
+&lt;div class="d-flex justify-content-center">
+&lt;div class="w-100" >&lt;img alt="overall_results" srcset="
+/project/camera_pose_estimation/images/batch_overall_hu61e0fcca124c9360c4638627d70ae5b4_71225_7aa304f7814721bf4817833481beeba4.webp 400w,
+/project/camera_pose_estimation/images/batch_overall_hu61e0fcca124c9360c4638627d70ae5b4_71225_d221c7200d2101cf0d96ee763dde5559.webp 760w,
+/project/camera_pose_estimation/images/batch_overall_hu61e0fcca124c9360c4638627d70ae5b4_71225_1200x1200_fit_q100_h2_lanczos_3.webp 1200w"
+src="https://mbrymer.github.io/project/camera_pose_estimation/images/batch_overall_hu61e0fcca124c9360c4638627d70ae5b4_71225_7aa304f7814721bf4817833481beeba4.webp"
+width="760"
+height="482"
+loading="lazy" data-zoomable />&lt;/div>
+&lt;/div>&lt;/figure>
+&lt;/p>
+&lt;p>Detailed plots of the position and rotational estimation error when compared against ground truth are shown below. Overall the estimation errors are relatively low compared to the scale of motion in the problem, demonstrating the strength of the batch estimation approach. The peak translational estimation errors are about 30 mm in both X and Y and 22 mm in Z, compared to the range of motion of 1.3 m in X, 0.65 m in Y and 1.1 m in Z. The rotational estimation errors are similarly low, reaching maximums of about 3.5 deg in X, 3.75 deg in Y and 4.5 deg in Z.&lt;/p>
+&lt;p>It can be seen that the Y estimation error exhibits a clear bias towards negative error as we saw earlier in the 3D trace, with a mean error of approximately -15 mm. This is likely due to a bias in the stereo camera measurements, which was observed in provided histograms of the stereo camera measurement errors for the vertical pixel measurements.&lt;/p>
+&lt;p>It can also be seen that the $3-\sigma$ uncertainty envelope calculated based on the estimated covariance bounds the estimation error for the most part. It grows when the number of landmarks in view decreases as expected, particularly between 20-23 s.&lt;/p>
+&lt;p>
+&lt;figure >
+&lt;div class="d-flex justify-content-center">
+&lt;div class="w-100" >&lt;img alt="position_error" srcset="
+/project/camera_pose_estimation/images/batch_estimate_position_error_hue088b4c1768016dec7747f60a0d69e8b_78858_ef519ec96037c996df6e87a1d5fc003c.webp 400w,
+/project/camera_pose_estimation/images/batch_estimate_position_error_hue088b4c1768016dec7747f60a0d69e8b_78858_ed374182f081b6ef2ca71fa32f9d89be.webp 760w,
+/project/camera_pose_estimation/images/batch_estimate_position_error_hue088b4c1768016dec7747f60a0d69e8b_78858_1200x1200_fit_q100_h2_lanczos_3.webp 1200w"
+src="https://mbrymer.github.io/project/camera_pose_estimation/images/batch_estimate_position_error_hue088b4c1768016dec7747f60a0d69e8b_78858_ef519ec96037c996df6e87a1d5fc003c.webp"
+width="760"
+height="577"
+loading="lazy" data-zoomable />&lt;/div>
+&lt;/div>&lt;/figure>
+&lt;figure >
+&lt;div class="d-flex justify-content-center">
+&lt;div class="w-100" >&lt;img alt="rotation_error" srcset="
+/project/camera_pose_estimation/images/batch_estimate_rotational_error_hubdf1acf408a701e68f69507d2c85a7c7_86543_86ef8e247045b4718b0847154e8000fb.webp 400w,
+/project/camera_pose_estimation/images/batch_estimate_rotational_error_hubdf1acf408a701e68f69507d2c85a7c7_86543_2ff4fb70805a6aa6779dd592017d29d8.webp 760w,
+/project/camera_pose_estimation/images/batch_estimate_rotational_error_hubdf1acf408a701e68f69507d2c85a7c7_86543_1200x1200_fit_q100_h2_lanczos_3.webp 1200w"
+src="https://mbrymer.github.io/project/camera_pose_estimation/images/batch_estimate_rotational_error_hubdf1acf408a701e68f69507d2c85a7c7_86543_86ef8e247045b4718b0847154e8000fb.webp"
+width="760"
+height="577"
+loading="lazy" data-zoomable />&lt;/div>
+&lt;/div>&lt;/figure>
+&lt;/p>
+&lt;p>Overall, the batch state estimation strategy did a great job of being able to fuse the IMU and stereo camera measurements to produce a robust pose estimate that is mostly consistent with its covariance estimate. This assignment was a great opportunity to practice some challenging Jacobian derivations, optimization problem formulation, rotation formalisms and sensor fusion for states that form a group rather than a vector space, such as pose matrices.&lt;/p>
+&lt;h2 id="problem-formulation">&lt;strong>Problem Formulation&lt;/strong>&lt;/h2>
+&lt;p>In this section I&amp;rsquo;ll briefly explain the methodology used to give a flavour for the problem. I&amp;rsquo;ll gloss over the finer points in the interest of keeping it short. For those who are interested the full details are given in Sections 6 and 7 of Barfoot[1].&lt;/p>
+&lt;p>The problem was formulated as a batch state estimation problem where we aim to estimate a trajectory of pose matrices $ \mathbf{T}_{vi,k} $ for all discrete time steps within the interval, where the pose matrix encodes the world (i for inertial frame) to vehicle transform and consists of a rotation matrix and position vector as:&lt;/p>
+&lt;p>$$
+\mathbf{T}_{vi,k} = \begin{bmatrix}
+\mathbf{C}_{vi,k} &amp;amp; -\mathbf{C}_{vi,k}\mathbf{r}_{i,k}^{vi} \\
+\mathbf{0}^T &amp;amp; 1
+\end{bmatrix}
+$$&lt;/p>
+&lt;p>Where $ \mathbf{r}_{i,k}^{vi} $ represents the position vector pointing from the world frame to the vehicle expressed in the inertial frame and the rotation matrix $\mathbf{C}_{vi,k}$ maps from the world to the vehicle frame at timestep $k$.&lt;/p>
+&lt;p>For simplicity of notation we will drop the subscript $ vi $ and simply denote the pose as $\mathbf{T}_{k}$. We can then write our state to be estimated as the full set of pose matrices across the interval, ie $\mathbf{x} = { \mathbf{T}_{0},\mathbf{T}_{1},\dots,\mathbf{T}_{K}}$.&lt;/p>
+&lt;p>For our state estimation problem we need to define both a motion and measurement model. We use a kinematic motion model based on integrating the IMU velocities as inputs and take the pixel coordinates in the stereo camera images as measurements. We can stack the linear and angular velocities into a single generalized velocity and pixel coordinates into a measurement vector as follows:
+$$
+\boldsymbol{\varpi}_{k} = \begin{bmatrix}
+\mathbf{v}_{v,k}^{vi} \\
+\boldsymbol{\omega}_{v,k}^{vi}
+\end{bmatrix} ,
+\mathbf{y}_{jk} = \begin{bmatrix}
+u_{l,jk} \\
+v_{l,jk} \\
+u_{r,jk} \\
+v_{r,jk} \\
+\end{bmatrix}
+$$&lt;/p>
+&lt;p>Where the IMU velocities are expressed in the vehicle frame and the horizontal/vertical pixel coordinates are for the $j$th landmark, assuming it&amp;rsquo;s in view. We can now express our kinematic motion model relating the state at one timestep to the next and our measurement model relating the state at the $k$th timestep to its expected measurement as:&lt;/p>
+&lt;p>$$
+\begin{gather*}
+\text{Motion Model}: \mathbf{T}_{k} = \exp(\Delta t \boldsymbol{\varpi}_{k-1}) \mathbf{T}_{k-1} = \Xi_k \mathbf{T}_{k-1} \\
+\text{Measurement Model}: \mathbf{y}_{jk} = \frac{1}{z_{jk}} \mathbf{M}\mathbf{T}_{cv}\mathbf{T}_{k}\mathbf{p}_{j,i}^{p_ji}
+\end{gather*}
+$$&lt;/p>
+&lt;p>The motion model consists of a first order Euler integration of the generalized velocity to determine a change in pose based on the exponetial mapping from the Lie Algebra to the Lie Group of the space of pose matrices, $SE(3)$. The measurement model is a standard stereo camera model relating the world position of the $j$th landmark, $ \mathbf{p}_{j,i}^{p_ji} $ to its expected pixel coordinates through the vehicle pose, $ \mathbf{T}_{k} $, the IMU to camera transform, $ \mathbf{T}_{cv} $ and the stereo camera intrinsics, $ \mathbf{M} $. For further details, see Sections 6 and 7 of Barfoot [1].&lt;/p>
+&lt;p>We can formulate the batch state estimation as an optimization problem by defining error terms derived from both models and using them in a nonlinear least-squares cost function. For the motion model we can define the error at each timestep as the difference between the pose estimate at that timestep and the pose produced by propagating the pose from the previous timestep forward using the motion model. This difference can be mapped to the Lie Algebra using the inverse exponential map, rather than a pose matrix. For the measurement model the error is simply the difference between the measured landmark pixel coordinates and those predicted by the measurement model based on the pose estimates. The terms can be weighted by the inverse covariances associated with the errors in the motion and measurement models.&lt;/p>
+&lt;p>The error terms and nonlinear least squares cost function can be expressed as
+$$
+\begin{gather*}
+\text{Motion Model Error}: \mathbf{e}_{v,k} = \ln(\Xi_k \mathbf{T}_{k-1} \mathbf{T}_{k}^{-1})^\lor \\
+\text{Measurement Model}: \mathbf{e}_{y,jk} = \mathbf{y}_{jk} - \frac{1}{z_{jk}} \mathbf{M}\mathbf{T}_{cv}\mathbf{T}_{k}\mathbf{p}_{j,i}^{p_ji} \\
+\text{Cost Function}: J(x) = \sum_{k=0}^K\frac{1}{2}\mathbf{e}_{v,k}^T\mathbf{Q}_k^{-1}\mathbf{e}_{v,k}+\sum_{k=0}^K\sum_{j_k}\frac{1}{2}\mathbf{e}_{y,jk}^T\mathbf{R}_{jk}^{-1}\mathbf{e}_{y,jk}
+\end{gather*}
+$$&lt;/p>
+&lt;p>Where $ \mathbf{Q}_k $ represents the covariance associated with the motion model at timestep $ k $, $ \mathbf{R}_{jk} $ represents the covariance associated with the $ j $th landmark at timestep $ k $ and the $ j $ summation occurs over all landmarks visible at that timestep.&lt;/p>
+&lt;p>This optimization can be solved with an iterative Gauss-Newton approach by linearizing the error terms. Each pose matrix state can be expressed as the combination of an operating point and a perturbation vector expressed in the Lie Algebra space. The perturbation can be represented with a Taylor expansion of the exponential map and then linearized by taking only the first term of its Taylor expansion as:
+$$
+\mathbf{T}_{k} = \exp(\boldsymbol{\epsilon}_{k}^{\wedge})\mathbf{T}_{op,k} \approx (\mathbf{1}+\boldsymbol{\epsilon}_{k}^{\wedge})\mathbf{T}_{op,k}
+$$&lt;/p>
+&lt;p>This approximation can be substituted into both the motion and measurement models to transform the error terms into the sum of an error at the current operating point, $ \mathbf{e}(\mathbf{x_{op}}) $ and a linear term associated with $ \epsilon_{k} $. When substituted into our cost function above these perturbations at each timestep can be stacked and factored out to yield a single matrix cost function as:&lt;/p>
+&lt;p>$$
+\begin{gather*}
+J(\boldsymbol{\epsilon}) = \frac{1}{2}(\mathbf{e}(\mathbf{x}_{op})-\mathbf{H}\boldsymbol{\epsilon})^T\mathbf{W}^{-1}(\mathbf{e}(\mathbf{x}_{op})-\mathbf{H}\boldsymbol{\epsilon}) \\
+\boldsymbol{\epsilon} = \begin{bmatrix}
+\boldsymbol{\epsilon}_{0} \\
+\boldsymbol{\epsilon}_{1} \\
+\vdots \\
+\boldsymbol{\epsilon}_{K}
+\end{bmatrix}
+\end{gather*}
+$$&lt;/p>
+&lt;p>Where the details of $ \mathbf{H} $ and $ \mathbf{W} $ contain Jacobians associated with the motion and measurement models. These are the keys to the assignment and hence to not be shared with some possible future student 🙂&lt;/p>
+&lt;p>This cost function is the same form as a standard weighted linear least squares problem, and can be solved via the Normal Equation to determine the full perturbation vector $ \boldsymbol{\epsilon} $ that minimizes cost. This perturbation vector can then be applied to the operating point at each timestep to yield an updated pose estimate as:&lt;/p>
+&lt;p>$$
+\mathbf{T}_{op,k,new} = \exp(\boldsymbol{\epsilon}_k^{*\wedge})\mathbf{T}_{op,k}
+$$&lt;/p>
+&lt;p>This forms the full Gauss-Newton step and can be iterated until convergence, yielding a final batch estimate for the pose at all timesteps.&lt;/p>
+&lt;h2 id="references">&lt;strong>References&lt;/strong>&lt;/h2>
+&lt;p>[1] - T. D. Barfoot, State Estimation for Robotics. Cambridge: Cambridge University Press, 2017.&lt;/p>
+&lt;p>Image credits for the experimental setup go to Professor Tim Barfoot at the &lt;a href="http://asrl.utias.utoronto.ca/" target="_blank" rel="noopener">Autonomous Space Robotics Lab&lt;/a> at UTIAS.&lt;/p></description></item></channel></rss>
