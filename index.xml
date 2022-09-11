@@ -225,7 +225,7 @@ loading="lazy" data-zoomable />&lt;/div>
 &lt;/div>
 $$ $$
 &lt;div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-&lt;iframe src="https://www.youtube.com/embed/w7Ft2ymGmfc" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video">&lt;/iframe>
+&lt;iframe src="https://www.youtube.com/embed/iUugwpjmoVI" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video">&lt;/iframe>
 &lt;/div>
 &lt;/p>
 &lt;p>Credits for the RViz tools to visualize the polyhedra and ellipsoids go to Sikang Liu [4].&lt;/p>
