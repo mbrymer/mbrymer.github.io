@@ -16,7 +16,7 @@ loading="lazy" data-zoomable />&lt;/div>
 &lt;/div>&lt;/figure>
 &lt;/p>
 &lt;p>Some simplifications were made to reduced the scope of the problem. The linear acceleration signals were transformed to linear velocities and the stereo camera images were preprocessed to identify the locations of the landmarks within both images, removing the problem of data association. Thus the inputs for the estimation problem consisted of a time history of linear velocity, angular velocity and pixel coordinates for the landmarks in both camera images. Also available were ground truth pose measurements from an external motion capture system for evaluating estimation error, parameters of the stereo camera and the pose of the camera relative to the IMU.&lt;/p>
-&lt;p>The camera was kept relatively close to the canvas and moved through a range of angles, leading to only some of the landmarks being visible at any given time. For about a third of the event there were fewer than 3 landmarks in view, or sometimes none at all. Given that at least 3 landmarks are needed to fix a position fusing both the camera and IMU data is necessary to obtain a pose estimate for the full trajectory.&lt;/p>
+&lt;p>The camera was kept relatively close to the canvas and moved through a range of angles, leading to only some of the landmarks being visible at any given time. For about a third of the event there were fewer than 3 landmarks in view, or sometimes none at all. Thus fusing both the camera and IMU data is necessary to obtain a pose estimate for the full trajectory.&lt;/p>
 &lt;p>
 &lt;figure >
 &lt;div class="d-flex justify-content-center">
@@ -31,7 +31,8 @@ loading="lazy" data-zoomable />&lt;/div>
 &lt;/div>&lt;/figure>
 &lt;/p>
 &lt;h2 id="implementation-and-results">&lt;strong>Implementation and Results&lt;/strong>&lt;/h2>
-&lt;p>The batch estimation problem was solved by forming a nonlinear least squares cost function in terms of the pose matrix at each timestep, the IMU inputs and stereo camera measurements. The problem was solved using an iterative Gauss-Newton optimization in implemented in a MATLAB script that converged in approximately 10 iterations. The next section digs into some of the details, but for those with less time on their hands we go straight to the results first 🙂&lt;/p>
+&lt;p>The batch estimation problem was solved by forming a nonlinear least squares cost function in terms of the pose matrix at each timestep, the IMU inputs and stereo camera measurements. The problem was solved using an iterative Gauss-Newton optimization implemented in a MATLAB script that converged in approximately 10 iterations. Some of the details on the problem are given in the next section.&lt;/p>
+&lt;!-- The next section digs into some of the details, but for those with less time on their hands we go straight to the results first 🙂 -->
 &lt;p>A 3D trace of the final vehicle position estimate is shown below, along with the result from dead reckoning by solely integrating the IMU signal and the ground truth. It can be seen that the estimate overall does a good job of following the ground truth, although there does appear to be a consistent bias in the Y position. The dead reckoned estimate diverges from the ground truth relatively quickly, demonstrating the importance of supplementing IMU measurements with absolute references&lt;/p>
 &lt;p>
 &lt;figure >
