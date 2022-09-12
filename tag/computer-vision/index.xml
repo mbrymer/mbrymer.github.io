@@ -5,7 +5,8 @@
 &lt;p>More accurate measurements of the relative pose can be achieved via vision with an onboard camera, which has been well explored in the literature [2][3]. These pose measurements can then be fused with IMU data to achieve a high rate state estimate. Thus for this project I investigated developing a visual-inertial estimation algorithm for implementation on a low cost, hobby grade quadrotor.&lt;/p>
 &lt;h2 id="approach">&lt;strong>Approach&lt;/strong>&lt;/h2>
 &lt;h4 id="filter-architecture-and-software-implementation">Filter Architecture and Software Implementation&lt;/h4>
-&lt;p>To simplify the vision problem I placed an AprilTag 3 fiducial marker on the landing pad, which is commonly used in robotics and allows the full 6 DoF pose to be estimated with a monocular camera [4]. The picture below shows the overall estimation problem and coordinate frames involved including the tag or inertial frame, $\overset{\rightharpoonup}{\mathcal{F}_t}$ , the vehicle frame, $\overset{\rightharpoonup}{\mathcal{F}_v}$ , and the camera frame, $\overset{\rightharpoonup}{\mathcal{F}_c}$ .&lt;/p>
+&lt;p>To simplify the vision problem I placed an AprilTag fiducial marker on the landing pad, which are commonly used in robotics and allow the full 6 DoF pose to be estimated with a monocular camera [4]. The picture below shows the overall estimation problem and coordinate frames involved.&lt;/p>
+&lt;!-- including the tag or inertial frame, $\overset{\rightharpoonup}{\mathcal{F}_t}$ , the vehicle frame, $\overset{\rightharpoonup}{\mathcal{F}_v}$ , and the camera frame, $\overset{\rightharpoonup}{\mathcal{F}_c}$ . -->
 &lt;!-- For this problem I assumed the landing pad remained fixed, so the quantities to be estimated are the position and orientation of the vehicle. -->
 &lt;p>
 &lt;figure >
@@ -20,15 +21,16 @@ height="760"
 loading="lazy" data-zoomable />&lt;/div>
 &lt;/div>&lt;/figure>
 &lt;/p>
-&lt;p>I used a Multiplicative Extended Kalman Filter [5] to estimate both the relative pose and the IMU biases. This framework breaks the state up into a nominal and perturbation component that allows the attitude in the form of a quaternion to be estimated with a conventional Kalman Filter, which is normally limited to vector spaces. The equations below show how this split is performed for the states, where $\delta\boldsymbol{\theta}$ represents the rotation perturbation vector. The full details of the derivation are available in the &lt;a href="https://mbrymer.github.io/uploads/AER1810_Project_Report.pdf" target="_blank">report&lt;/a>.&lt;/p>
-&lt;p>$$
+&lt;p>I used a Multiplicative Extended Kalman Filter [5] to estimate both the relative pose and the IMU biases. This framework breaks the state up into a nominal and perturbation component that allows the attitude quaternion to be estimated with a conventional Kalman Filter, which is normally limited to vector spaces. The full details of the derivation are available in the &lt;a href="https://mbrymer.github.io/uploads/AER1810_Project_Report.pdf" target="_blank">report&lt;/a>.&lt;/p>
+&lt;!-- The equations below show how this split is performed for the states, where $\delta\boldsymbol{\theta}$ represents the rotation perturbation vector. -->
+&lt;!-- $$
 \begin{align*}
-&amp;amp; \textbf{r}_t^{vt} = \bar{\textbf{r}}_t^{vt} + \delta\textbf{r} &amp;amp; &amp;amp; \textbf{v}_t^{vt} = \bar{\textbf{v}}_t^{vt} + \delta\textbf{v} &amp;amp; \\
-&amp;amp; \textbf{q}_{tv} = \bar{\textbf{q}}_{tv} \otimes \delta\textbf{q} &amp;amp; &amp;amp; \textbf{C}_{tv} = \bar{\textbf{C}}_{tv}\delta \textbf{C} &amp;amp; \\
-&amp;amp; \textbf{a}_b = \bar{\textbf{a}}_b + \delta \textbf{a}_b &amp;amp; &amp;amp; \boldsymbol{\omega}_b = \bar{\boldsymbol{\omega}}_b + \delta \boldsymbol{\omega}_b &amp;amp; \\
-&amp;amp; \delta\textbf{q} = \exp{\frac{\delta\boldsymbol{\theta}}{2}} &amp;amp; &amp;amp; \delta \textbf{C} = \exp{[\delta\boldsymbol{\theta}]_\times} &amp;amp;
+&amp; \textbf{r}_t^{vt} = \bar{\textbf{r}}_t^{vt} + \delta\textbf{r} &amp; &amp; \textbf{v}_t^{vt} = \bar{\textbf{v}}_t^{vt} + \delta\textbf{v} &amp; \\\\
+&amp; \textbf{q}\_{tv} = \bar{\textbf{q}}\_{tv} \otimes \delta\textbf{q} &amp; &amp; \textbf{C}\_{tv} = \bar{\textbf{C}}\_{tv}\delta \textbf{C} &amp; \\\\
+&amp; \textbf{a}_b = \bar{\textbf{a}}_b + \delta \textbf{a}_b &amp; &amp; \boldsymbol{\omega}_b = \bar{\boldsymbol{\omega}}_b + \delta \boldsymbol{\omega}_b &amp; \\\\
+&amp; \delta\textbf{q} = \exp{\frac{\delta\boldsymbol{\theta}}{2}} &amp; &amp; \delta \textbf{C} = \exp{[\delta\boldsymbol{\theta}]\_\times} &amp;
 \end{align*}
-$$&lt;/p>
+$$ -->
 &lt;p>I implemented the filter in a C++ ROS node, which takes IMU data and the pose of the tag from the AprilTag ROS node [6] as inputs and outputs the estimated relative pose and covariance. The detections reach the filter with a significant delay due to the cost of the image processing pipeline, which was on the order of 0.2 s in the hardware setup. For this reason the tag detections when received are fused to a past state based on the estimated delay.&lt;/p>
 &lt;!-- For this reason the state history is stored at each filter update and the tag detections when received are fused to a past state based on the estimated delay. After this the prior history is discarded and the prediction steps are recalculated to determine the estimate at the current time. -->
 &lt;h4 id="hardware-platform">Hardware Platform&lt;/h4>
