@@ -2,7 +2,7 @@
 &lt;p>This was my final project at UTIAS where I developed a visual-inertial estimation algorithm for estimating the relative pose of a quadrotor over a landing pad and deployed it on a custom hardware platform.&lt;/p>
 &lt;h2 id="overview">&lt;strong>Overview&lt;/strong>&lt;/h2>
 &lt;p>This work was performed as part of an overarching personal project to build a quadrotor from hobby grade components capable of autonomously taking off, flying to a target GPS location and then executing a precision landing on a landing pad at that location. One of the most crucial aspects of this system is deriving an accurate estimate of the vehicle relative pose for control of the final landing phase. Low cost GPS units typically only achieve horizontal position accuracies on the order of 2.5 m [1], which is good for general purpose or return to launch flight but insufficient for a precise landing.&lt;/p>
-&lt;p>More accurate measurements of the relative pose can be achieved via vision with an onboard camera, which has been well explored in the literature [2][3]. These pose measurements can then be fused with IMU data to achieve a high rate state estimate. Thus for this project I investigated developing a visual-inertial estimation algorithm for implementation on a low cost, hobby grade quadrotor.&lt;/p>
+&lt;p>More accurate measurements of the relative pose can be achieved via vision with an onboard camera, which has been well explored in the literature [2][3]. These pose measurements can then be fused with IMU data to achieve a high rate state estimate. Thus for this project I investigated developing a visual-inertial estimation algorithm for implementation on a low cost quadrotor.&lt;/p>
 &lt;h2 id="approach">&lt;strong>Approach&lt;/strong>&lt;/h2>
 &lt;h4 id="filter-architecture-and-software-implementation">Filter Architecture and Software Implementation&lt;/h4>
 &lt;p>To simplify the vision problem I placed an AprilTag fiducial marker on the landing pad, which are commonly used in robotics and allow the full 6 DoF pose to be estimated with a monocular camera [4]. The picture below shows the overall estimation problem and coordinate frames involved.&lt;/p>
@@ -31,10 +31,10 @@ loading="lazy" data-zoomable />&lt;/div>
 &amp; \delta\textbf{q} = \exp{\frac{\delta\boldsymbol{\theta}}{2}} &amp; &amp; \delta \textbf{C} = \exp{[\delta\boldsymbol{\theta}]\_\times} &amp;
 \end{align*}
 $$ -->
-&lt;p>I implemented the filter in a C++ ROS node, which takes IMU data and the pose of the tag from the AprilTag ROS node [6] as inputs and outputs the estimated relative pose and covariance. The detections reach the filter with a significant delay due to the cost of the image processing pipeline, which was on the order of 0.2 s in the hardware setup. For this reason the tag detections when received are fused to a past state based on the estimated delay.&lt;/p>
+&lt;p>I implemented the filter in a C++ ROS node, which takes IMU data and the pose of the tag from the AprilTag ROS node [6] as inputs and outputs the estimated relative pose and covariance. Due to the cost of the image processing pipeline, the detections reach the filter with a significant delay, which was on the order of 0.2 s in the hardware setup. For this reason the tag detections are fused to a past state based on the estimated delay.&lt;/p>
 &lt;!-- For this reason the state history is stored at each filter update and the tag detections when received are fused to a past state based on the estimated delay. After this the prior history is discarded and the prediction steps are recalculated to determine the estimate at the current time. -->
 &lt;h4 id="hardware-platform">Hardware Platform&lt;/h4>
-&lt;p>The filter was deployed on a custom quadrotor platform illustrated below. Flight control is performed by the Holybro Kakute F7 flight controller running ArduPilot 4.2.2 and the filter runs on a NVIDIA Jetson Nano 4GB using images from an industrial machine vision camera. The vehicle has a total mass of 1.115 kg and estimated maximum thrust of 36.9 N based on data from the motor manufacturer, leading to a thrust to weight ratio of 3.4.&lt;/p>
+&lt;p>The filter was deployed on a custom quadrotor platform illustrated below. Flight control is performed by a Holybro Kakute F7 flight controller running ArduPilot 4.2.2 and the filter runs on a NVIDIA Jetson Nano 4GB using images from an industrial machine vision camera. The vehicle has a total mass of 1.115 kg and estimated maximum thrust of 36.9 N based on data from the motor manufacturer, leading to a thrust to weight ratio of 3.4.&lt;/p>
 &lt;p>
 &lt;figure >
 &lt;div class="d-flex justify-content-center">
@@ -81,7 +81,7 @@ loading="lazy" data-zoomable />&lt;/div>
 &lt;div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
 &lt;iframe src="https://www.youtube.com/embed/fAnWYViexuY" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video">&lt;/iframe>
 &lt;/div>
-&lt;p>No ground truth is available so the estimate is instead compared against the AprilTag reported pose for reference. While detection is maintained the filter does a good job of tracking the magnitude of the motions observed visually. The filter rejects noise in the reported pose at higher heights and also leads the reported pose due to the delay compensation.&lt;/p>
+&lt;p>No ground truth is available so the estimate is instead compared against the AprilTag reported pose for reference. While detection is maintained the filter does a good job of tracking the magnitude of the motions observed visually. The filter rejects noise in the reported pose at higher heights and exhibits a phase lead relative to the reported pose due to the delay compensation.&lt;/p>
 &lt;!-- The estimate ranges between -0.5 m to 1 m in X (left to right) and -0.5 to 1.5 m in Y (towards/away from camera). -->
 &lt;p>The camera loses sight of the tag when changing directions at the edge of its trajectory, leading to drift in the estimate. A maximum drift of approximately 0.71 m is seen around 19 s into the event. Drift also occurs after touchdown when view of the tag is lost that would need to be disabled by the overall state machine when implemented in the full system.&lt;/p>
 &lt;p>The filter was additionally evaluated indoors when moving the vehicle around by hand, the results of which are summarized in the &lt;a href="https://mbrymer.github.io/uploads/AER1810_Project_Report.pdf" target="_blank">report&lt;/a>.&lt;/p>
@@ -91,8 +91,8 @@ loading="lazy" data-zoomable />&lt;/div>
 &lt;li>The delay in the pose measurements significantly affects filter performance as the pose drives what state the IMU prediction propagates from
 &lt;ul>
 &lt;li>Exact capture time is uncertain due to camera not supporting software trigger. Delay is currently estimated via approximate time stamp plus a constant offset&lt;/li>
-&lt;li>A study on the effect of delay time is available in the &lt;a href="https://mbrymer.github.io/uploads/AER1810_Project_Report.pdf" target="_blank">report&lt;/a>.&lt;/li>
 &lt;/ul>
+&lt;!-- * A study on the effect of delay time is available in the &lt;a href="https://mbrymer.github.io/uploads/AER1810_Project_Report.pdf" target="_blank">report&lt;/a>. -->
 &lt;/li>
 &lt;li>The AprilTag detector has a tendency to produce spurious rotation estimates when a tag in the bundle is close to the edge of the image
 &lt;ul>
@@ -113,14 +113,14 @@ loading="lazy" data-zoomable />&lt;/div>
 &lt;ul>
 &lt;li>Add additional measurements to improve robustness to lost detections. Possible options:
 &lt;ul>
-&lt;li>Orientation reference, possibly from a simpler IMU only method such as the Mahony filter [8]&lt;/li>
-&lt;li>Barometer to provide height feedback, potentially with a bias term&lt;/li>
+&lt;li>Orientation reference, potentially from a simpler IMU only method such as the Mahony filter [8]&lt;/li>
+&lt;li>Barometer to provide height feedback&lt;/li>
 &lt;li>Motor thrust model, allows moving accelerometer data to measurement side of the EKF&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>Update to a more advanced filter architecture such as a Sigma Point or Iterated Extended Kalman Filter&lt;/li>
-&lt;li>Improve rejection of bad AprilTag orientation detections&lt;/li>
-&lt;li>Move to a GPU implementation of AprilTag detector to potentially reduce need for downsampling, increase run rate or reduce delay time&lt;/li>
+&lt;li>Improve rejection of spurious AprilTag orientation estimates&lt;/li>
+&lt;li>Explore a GPU implementation of AprilTag detector to potentially reduce need for downsampling, increase run rate or reduce delay time&lt;/li>
 &lt;/ul>
 &lt;h2 id="references">&lt;strong>References&lt;/strong>&lt;/h2>
 &lt;p>[1] u-blox &lt;a href="https://content.u-blox.com/sites/default/files/SAM-M8Q_DataSheet_%28UBX-16012619%29.pdf" target="_blank" rel="noopener">SAM-M8Q Data Sheet&lt;/a>&lt;/p>

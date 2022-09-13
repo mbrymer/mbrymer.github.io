@@ -2,7 +2,7 @@
 &lt;p>This was my final project at UTIAS where I developed a visual-inertial estimation algorithm for estimating the relative pose of a quadrotor over a landing pad and deployed it on a custom hardware platform.&lt;/p>
 &lt;h2 id="overview">&lt;strong>Overview&lt;/strong>&lt;/h2>
 &lt;p>This work was performed as part of an overarching personal project to build a quadrotor from hobby grade components capable of autonomously taking off, flying to a target GPS location and then executing a precision landing on a landing pad at that location. One of the most crucial aspects of this system is deriving an accurate estimate of the vehicle relative pose for control of the final landing phase. Low cost GPS units typically only achieve horizontal position accuracies on the order of 2.5 m [1], which is good for general purpose or return to launch flight but insufficient for a precise landing.&lt;/p>
-&lt;p>More accurate measurements of the relative pose can be achieved via vision with an onboard camera, which has been well explored in the literature [2][3]. These pose measurements can then be fused with IMU data to achieve a high rate state estimate. Thus for this project I investigated developing a visual-inertial estimation algorithm for implementation on a low cost, hobby grade quadrotor.&lt;/p>
+&lt;p>More accurate measurements of the relative pose can be achieved via vision with an onboard camera, which has been well explored in the literature [2][3]. These pose measurements can then be fused with IMU data to achieve a high rate state estimate. Thus for this project I investigated developing a visual-inertial estimation algorithm for implementation on a low cost quadrotor.&lt;/p>
 &lt;h2 id="approach">&lt;strong>Approach&lt;/strong>&lt;/h2>
 &lt;h4 id="filter-architecture-and-software-implementation">Filter Architecture and Software Implementation&lt;/h4>
 &lt;p>To simplify the vision problem I placed an AprilTag fiducial marker on the landing pad, which are commonly used in robotics and allow the full 6 DoF pose to be estimated with a monocular camera [4]. The picture below shows the overall estimation problem and coordinate frames involved.&lt;/p>
@@ -31,10 +31,10 @@ loading="lazy" data-zoomable />&lt;/div>
 &amp; \delta\textbf{q} = \exp{\frac{\delta\boldsymbol{\theta}}{2}} &amp; &amp; \delta \textbf{C} = \exp{[\delta\boldsymbol{\theta}]\_\times} &amp;
 \end{align*}
 $$ -->
-&lt;p>I implemented the filter in a C++ ROS node, which takes IMU data and the pose of the tag from the AprilTag ROS node [6] as inputs and outputs the estimated relative pose and covariance. The detections reach the filter with a significant delay due to the cost of the image processing pipeline, which was on the order of 0.2 s in the hardware setup. For this reason the tag detections when received are fused to a past state based on the estimated delay.&lt;/p>
+&lt;p>I implemented the filter in a C++ ROS node, which takes IMU data and the pose of the tag from the AprilTag ROS node [6] as inputs and outputs the estimated relative pose and covariance. Due to the cost of the image processing pipeline, the detections reach the filter with a significant delay, which was on the order of 0.2 s in the hardware setup. For this reason the tag detections are fused to a past state based on the estimated delay.&lt;/p>
 &lt;!-- For this reason the state history is stored at each filter update and the tag detections when received are fused to a past state based on the estimated delay. After this the prior history is discarded and the prediction steps are recalculated to determine the estimate at the current time. -->
 &lt;h4 id="hardware-platform">Hardware Platform&lt;/h4>
-&lt;p>The filter was deployed on a custom quadrotor platform illustrated below. Flight control is performed by the Holybro Kakute F7 flight controller running ArduPilot 4.2.2 and the filter runs on a NVIDIA Jetson Nano 4GB using images from an industrial machine vision camera. The vehicle has a total mass of 1.115 kg and estimated maximum thrust of 36.9 N based on data from the motor manufacturer, leading to a thrust to weight ratio of 3.4.&lt;/p>
+&lt;p>The filter was deployed on a custom quadrotor platform illustrated below. Flight control is performed by a Holybro Kakute F7 flight controller running ArduPilot 4.2.2 and the filter runs on a NVIDIA Jetson Nano 4GB using images from an industrial machine vision camera. The vehicle has a total mass of 1.115 kg and estimated maximum thrust of 36.9 N based on data from the motor manufacturer, leading to a thrust to weight ratio of 3.4.&lt;/p>
 &lt;p>
 &lt;figure >
 &lt;div class="d-flex justify-content-center">
@@ -81,7 +81,7 @@ loading="lazy" data-zoomable />&lt;/div>
 &lt;div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
 &lt;iframe src="https://www.youtube.com/embed/fAnWYViexuY" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video">&lt;/iframe>
 &lt;/div>
-&lt;p>No ground truth is available so the estimate is instead compared against the AprilTag reported pose for reference. While detection is maintained the filter does a good job of tracking the magnitude of the motions observed visually. The filter rejects noise in the reported pose at higher heights and also leads the reported pose due to the delay compensation.&lt;/p>
+&lt;p>No ground truth is available so the estimate is instead compared against the AprilTag reported pose for reference. While detection is maintained the filter does a good job of tracking the magnitude of the motions observed visually. The filter rejects noise in the reported pose at higher heights and exhibits a phase lead relative to the reported pose due to the delay compensation.&lt;/p>
 &lt;!-- The estimate ranges between -0.5 m to 1 m in X (left to right) and -0.5 to 1.5 m in Y (towards/away from camera). -->
 &lt;p>The camera loses sight of the tag when changing directions at the edge of its trajectory, leading to drift in the estimate. A maximum drift of approximately 0.71 m is seen around 19 s into the event. Drift also occurs after touchdown when view of the tag is lost that would need to be disabled by the overall state machine when implemented in the full system.&lt;/p>
 &lt;p>The filter was additionally evaluated indoors when moving the vehicle around by hand, the results of which are summarized in the &lt;a href="https://mbrymer.github.io/uploads/AER1810_Project_Report.pdf" target="_blank">report&lt;/a>.&lt;/p>
@@ -91,8 +91,8 @@ loading="lazy" data-zoomable />&lt;/div>
 &lt;li>The delay in the pose measurements significantly affects filter performance as the pose drives what state the IMU prediction propagates from
 &lt;ul>
 &lt;li>Exact capture time is uncertain due to camera not supporting software trigger. Delay is currently estimated via approximate time stamp plus a constant offset&lt;/li>
-&lt;li>A study on the effect of delay time is available in the &lt;a href="https://mbrymer.github.io/uploads/AER1810_Project_Report.pdf" target="_blank">report&lt;/a>.&lt;/li>
 &lt;/ul>
+&lt;!-- * A study on the effect of delay time is available in the &lt;a href="https://mbrymer.github.io/uploads/AER1810_Project_Report.pdf" target="_blank">report&lt;/a>. -->
 &lt;/li>
 &lt;li>The AprilTag detector has a tendency to produce spurious rotation estimates when a tag in the bundle is close to the edge of the image
 &lt;ul>
@@ -113,14 +113,14 @@ loading="lazy" data-zoomable />&lt;/div>
 &lt;ul>
 &lt;li>Add additional measurements to improve robustness to lost detections. Possible options:
 &lt;ul>
-&lt;li>Orientation reference, possibly from a simpler IMU only method such as the Mahony filter [8]&lt;/li>
-&lt;li>Barometer to provide height feedback, potentially with a bias term&lt;/li>
+&lt;li>Orientation reference, potentially from a simpler IMU only method such as the Mahony filter [8]&lt;/li>
+&lt;li>Barometer to provide height feedback&lt;/li>
 &lt;li>Motor thrust model, allows moving accelerometer data to measurement side of the EKF&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>Update to a more advanced filter architecture such as a Sigma Point or Iterated Extended Kalman Filter&lt;/li>
-&lt;li>Improve rejection of bad AprilTag orientation detections&lt;/li>
-&lt;li>Move to a GPU implementation of AprilTag detector to potentially reduce need for downsampling, increase run rate or reduce delay time&lt;/li>
+&lt;li>Improve rejection of spurious AprilTag orientation estimates&lt;/li>
+&lt;li>Explore a GPU implementation of AprilTag detector to potentially reduce need for downsampling, increase run rate or reduce delay time&lt;/li>
 &lt;/ul>
 &lt;h2 id="references">&lt;strong>References&lt;/strong>&lt;/h2>
 &lt;p>[1] u-blox &lt;a href="https://content.u-blox.com/sites/default/files/SAM-M8Q_DataSheet_%28UBX-16012619%29.pdf" target="_blank" rel="noopener">SAM-M8Q Data Sheet&lt;/a>&lt;/p>
@@ -143,8 +143,8 @@ Cham: Springer International Publishing, 2016.&lt;/p>
 &lt;p>[8] R. Mahony, T. Hamel, and J.-M. Pflimlin, “Nonlinear complementary filters on the special orthogonal
 group,” IEEE Transactions on Automatic Control, vol. 53, no. 5, pp. 1203–1218, 2008.&lt;/p></description></item><item><title>Batch Pose Estimation for a Stereo Camera</title><link>https://mbrymer.github.io/project/camera_pose_estimation/</link><pubDate>Fri, 10 Dec 2021 00:00:00 +0000</pubDate><guid>https://mbrymer.github.io/project/camera_pose_estimation/</guid><description>&lt;p>The final assignment in one of my classes at UTIAS, AER 1513 - State Estimation for Robotics, had us solve a batch state estimation problem for a sensor head with both a stereo camera and an IMU attached.&lt;/p>
 &lt;h2 id="overview">&lt;strong>Overview&lt;/strong>&lt;/h2>
-&lt;p>The task was to derive an estimate for the full 6 DoF pose trajectory of the sensor head (henceforth referred to as the &amp;ldquo;vehicle&amp;rdquo;) for a sweeping motion spanning approximately 40 s given a history of IMU and stereo camera measurements. The vehicle was moved back and forth over a canvas with a set of markers on it that were each known to have a given, fixed location. These markers formed landmarks that through the stereo camera images and model could be used to establish an absolute position reference. Measurements to multiple landmarks can then be used to triangulate a position and orientation.&lt;/p>
-&lt;p>The experimental setup along with sample camera images and the ground truth pose is shown below.&lt;/p>
+&lt;p>The task was to derive an estimate for the full 6 DoF pose trajectory of the sensor head (henceforth referred to as the &amp;ldquo;vehicle&amp;rdquo;) for a sweeping motion spanning approximately 40 s given a history of IMU and stereo camera measurements. The vehicle was moved back and forth over a canvas with a set of markers on it that were each known to have a given location. These formed landmarks that could be used to establish an absolute position reference and triangulate a position and orientation.&lt;/p>
+&lt;p>The experimental setup along with sample camera images and the ground truth pose measured by an external motion capture system is shown below.&lt;/p>
 &lt;p>
 &lt;figure >
 &lt;div class="d-flex justify-content-center">
@@ -158,7 +158,7 @@ height="563"
 loading="lazy" data-zoomable />&lt;/div>
 &lt;/div>&lt;/figure>
 &lt;/p>
-&lt;p>Some simplifications were made to reduced the scope of the problem. The linear acceleration signals were transformed to linear velocities and the stereo camera images were preprocessed to identify the locations of the landmarks within both images, removing the problem of data association. Thus the inputs for the estimation problem consisted of a time history of linear velocity, angular velocity and pixel coordinates for the landmarks in both camera images. Also available were ground truth pose measurements from an external motion capture system for evaluating estimation error, parameters of the stereo camera and the pose of the camera relative to the IMU.&lt;/p>
+&lt;!-- Some simplifications were made to reduced the scope of the problem. The linear acceleration signals were transformed to linear velocities and the stereo camera images were preprocessed to identify the locations of the landmarks within both images, removing the problem of data association. Thus the inputs for the estimation problem consisted of a time history of linear velocity, angular velocity and pixel coordinates for the landmarks in both camera images. Also available were ground truth pose measurements from an external motion capture system for evaluating estimation error, parameters of the stereo camera and the pose of the camera relative to the IMU. -->
 &lt;p>The camera was kept relatively close to the canvas and moved through a range of angles, leading to only some of the landmarks being visible at any given time. For about a third of the event there were fewer than 3 landmarks in view, or sometimes none at all. Thus fusing both the camera and IMU data is necessary to obtain a pose estimate for the full trajectory.&lt;/p>
 &lt;p>
 &lt;figure >
@@ -174,9 +174,9 @@ loading="lazy" data-zoomable />&lt;/div>
 &lt;/div>&lt;/figure>
 &lt;/p>
 &lt;h2 id="implementation-and-results">&lt;strong>Implementation and Results&lt;/strong>&lt;/h2>
-&lt;p>The batch estimation problem was solved by forming a nonlinear least squares cost function in terms of the pose matrix at each timestep, the IMU inputs and stereo camera measurements. The problem was solved using an iterative Gauss-Newton optimization implemented in a MATLAB script that converged in approximately 10 iterations. Some of the details on the problem are given in the next section.&lt;/p>
+&lt;p>The batch estimation problem was solved by forming a nonlinear least squares cost function in terms of the pose matrix at each timestep, the IMU inputs and stereo camera measurements. The problem was solved using an iterative Gauss-Newton optimization implemented in a MATLAB script that converged in approximately 10 iterations. Some of the details on the problem formulation are given in the next section.&lt;/p>
 &lt;!-- The next section digs into some of the details, but for those with less time on their hands we go straight to the results first 🙂 -->
-&lt;p>A 3D trace of the final vehicle position estimate is shown below, along with the result from dead reckoning by solely integrating the IMU signal and the ground truth. It can be seen that the estimate overall does a good job of following the ground truth, although there does appear to be a consistent bias in the Y position. The dead reckoned estimate diverges from the ground truth relatively quickly, demonstrating the importance of supplementing IMU measurements with absolute references&lt;/p>
+&lt;p>A 3D trace of the final vehicle position estimate is shown below, along with the ground truth and a dead reckoned estimate from integrating the IMU signal. It can be seen that the estimate overall follows the ground truth well, although there is a consistent bias in the Y position. The dead reckoned estimate quickly diverges from the ground truth, demonstrating the importance of supplementing IMU data with absolute references.&lt;/p>
 &lt;p>
 &lt;figure >
 &lt;div class="d-flex justify-content-center">
@@ -190,9 +190,10 @@ height="482"
 loading="lazy" data-zoomable />&lt;/div>
 &lt;/div>&lt;/figure>
 &lt;/p>
-&lt;p>Detailed plots of the position and rotational estimation error when compared against ground truth are shown below. Overall the estimation errors are relatively low compared to the scale of motion in the problem, demonstrating the strength of the batch estimation approach. The peak translational estimation errors are about 30 mm in both X and Y and 22 mm in Z, compared to the range of motion of 1.3 m in X, 0.65 m in Y and 1.1 m in Z. The rotational estimation errors are similarly low, reaching maximums of about 3.5 deg in X, 3.75 deg in Y and 4.5 deg in Z.&lt;/p>
+&lt;p>Detailed plots of the position and rotational estimation error when compared against ground truth are shown below. Overall the estimation errors are relatively low compared to the scale of motion in the problem, demonstrating the strength of the batch estimation approach.&lt;/p>
+&lt;!-- The peak translational estimation errors are about 30 mm in both X and Y and 22 mm in Z, compared to the range of motion of 1.3 m in X, 0.65 m in Y and 1.1 m in Z. The rotational estimation errors are similarly low, reaching maximums of about 3.5 deg in X, 3.75 deg in Y and 4.5 deg in Z. -->
 &lt;p>It can be seen that the Y estimation error exhibits a clear bias towards negative error as we saw earlier in the 3D trace, with a mean error of approximately -15 mm. This is likely due to a bias in the stereo camera measurements, which was observed in provided histograms of the stereo camera measurement errors for the vertical pixel measurements.&lt;/p>
-&lt;p>It can also be seen that the $3-\sigma$ uncertainty envelope calculated based on the estimated covariance bounds the estimation error for the most part. It grows when the number of landmarks in view decreases as expected, particularly between 20-23 s.&lt;/p>
+&lt;p>It can also be seen that the $3-\sigma$ uncertainty envelope calculated based on the estimated covariance bounds the estimation error for the most part. As expected it grows when the number of landmarks in view decreases, particularly between 20-23 s.&lt;/p>
 &lt;p>
 &lt;figure >
 &lt;div class="d-flex justify-content-center">
@@ -217,9 +218,10 @@ height="577"
 loading="lazy" data-zoomable />&lt;/div>
 &lt;/div>&lt;/figure>
 &lt;/p>
-&lt;p>Overall, the batch state estimation strategy did a great job of being able to fuse the IMU and stereo camera measurements to produce a robust pose estimate that is mostly consistent with its covariance estimate. This assignment was a great opportunity to practice some challenging Jacobian derivations, optimization problem formulation, rotation formalisms and sensor fusion for states that form a group rather than a vector space, such as pose matrices.&lt;/p>
+&lt;p>Overall, the batch state estimation strategy did a great job of being able to fuse both data streams to produce a robust pose estimate that is mostly consistent with its covariance estimate. This assignment was a great opportunity to practice some challenging Jacobian derivations, optimization problem formulation, rotation formalisms and sensor fusion for states that form a group rather than a vector space, such as pose matrices.&lt;/p>
 &lt;h2 id="problem-formulation">&lt;strong>Problem Formulation&lt;/strong>&lt;/h2>
-&lt;p>In this section I&amp;rsquo;ll briefly explain the methodology used to give a flavour for the problem. I&amp;rsquo;ll gloss over the finer points in the interest of keeping it short. For those who are interested the full details are given in Sections 6 and 7 of Barfoot[1].&lt;/p>
+&lt;p>In this section I&amp;rsquo;ll briefly explain the methodology used to give a flavour for the problem. I&amp;rsquo;ll gloss over the finer points in the interest of keeping it short. For those who are interested the full details are given in Sections 6 and 7 of Barfoot [1].&lt;/p>
+&lt;p>Some simplifications were made to reduced the scope of the problem. The linear acceleration signals were transformed to linear velocities and the stereo camera images were preprocessed to identify the landmarks within both images, removing the problem of data association. Thus the inputs for the estimation problem consisted of a time history of linear velocity, angular velocity and pixel coordinates for the landmarks in both camera images.&lt;/p>
 &lt;p>The problem was formulated as a batch state estimation problem where we aim to estimate a trajectory of pose matrices $ \mathbf{T}_{vi,k} $ for all discrete time steps within the interval, where the pose matrix encodes the world (i for inertial frame) to vehicle transform and consists of a rotation matrix and position vector as:&lt;/p>
 &lt;p>$$
 \mathbf{T}_{vi,k} = \begin{bmatrix}
